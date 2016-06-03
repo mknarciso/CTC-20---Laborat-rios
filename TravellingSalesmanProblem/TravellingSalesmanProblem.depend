@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1464914668 source:c:\users\lenovo\desktop\travellingsalesmanproblem\src\dynammicprogramming.cpp
+	"DynammicProgramming.h"
+	<limits>
+	<iostream>
+
+1464914288 c:\users\lenovo\desktop\travellingsalesmanproblem\include\dynammicprogramming.h
+	<vector>
+	<queue>
+	<unordered_set>
+
+1464914668 source:c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\src\dynammicprogramming.cpp
+	"DynammicProgramming.h"
+	<limits>
+	<iostream>
+
+1464914288 c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\include\dynammicprogramming.h
+	<vector>
+	<queue>
+	<unordered_set>
+
