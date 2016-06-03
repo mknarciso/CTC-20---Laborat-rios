@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1464956017 source:c:\users\lenovo\desktop\digitalnetworks\src\logicgates.cpp
+	"LogicGates.h"
+	<cmath>
+	<iostream>
+
+1464954588 c:\users\lenovo\desktop\digitalnetworks\include\logicgates.h
+	<vector>
+
