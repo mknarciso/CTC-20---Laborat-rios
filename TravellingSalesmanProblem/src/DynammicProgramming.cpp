@@ -23,7 +23,9 @@ vector<int> DynammicProgramming::Solve(double &cost)
     Node root;
     cost = GetMinimumCostRoute(startVertex, hashSet, root);
     return TraverseTree(root, startVertex);
+
 }
+
 
 double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<int> &hashSet, Node &root)
 {
@@ -39,30 +41,35 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
     int i = 0;
     int selectIdx = i;
 
-    for (const auto& destination: hashSet)
-    {
-        Node node;
-        node.Value = destination;
-        node.Selected = false;
-        root.ChildNodes.push_back(node);
+    for (const auto& destination: hashSet)    {
 
-        double costOfVisitingCurrentNode = adjacencyMatrix[startVertex][destination];
 
-        unordered_set<int> newHashSet = hashSet;
+        if (adjacencyMatrix[startVertex][destination] != -1) {
+            Node node;
+            node.Value = destination;
+            node.Selected = false;
+            root.ChildNodes.push_back(node);
 
-        newHashSet.erase(destination);
-        double costOfVisitingOtherNodes = GetMinimumCostRoute(destination, newHashSet, root.ChildNodes[i]);
-        double currentCost = costOfVisitingCurrentNode + costOfVisitingOtherNodes;
 
-        if (totalCost > currentCost)
-        {
-            totalCost = currentCost;
-            selectIdx = i;
+            double costOfVisitingCurrentNode = adjacencyMatrix[startVertex][destination];
+
+            unordered_set<int> newHashSet = hashSet;
+
+            newHashSet.erase(destination);
+            double costOfVisitingOtherNodes = GetMinimumCostRoute(destination, newHashSet, root.ChildNodes[i]);
+            double currentCost = costOfVisitingCurrentNode + costOfVisitingOtherNodes;
+
+            if (totalCost > currentCost)
+            {
+                totalCost = currentCost;
+                selectIdx = i;
+            }
+            i++;
         }
-        i++;
     }
-
-    root.ChildNodes[selectIdx].Selected = true;
+    //problema here
+    if (root.ChildNodes.size() !=0)
+        root.ChildNodes[selectIdx].Selected = true;
     return totalCost;
 }
 
@@ -100,17 +107,40 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
 
 int main()
 {
-    vector<int> vertics  = {0,1,2,3};
+    //exemplo hamiltoniano
+    /*vector<int> vertics  = {0,1,2,3, 4, 5, 6, 7, 8, 9};
     vector<vector<double> > adjMatrix = {
-        {0, 10, 15, 20},
-        {5, 0 , 9, 10},
-        {6, 13, 9, 12},
-        {8, 8, 9, 0}
-    };
+        {0, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
+        {5, 0 , 9, 10, 5, 0, 9, 10, 5, 9},
+        {6, 13, 9, 12, 6, 13, 9, 12, 6, 13},
+        {8, 8, 9, 0, 8, 8, 9, 0, 8, 8},
+        {0, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
+        {5, 0 , 9, 10, 5, 0, 9, 10, 5, 9},
+        {6, 13, 9, 12, 6, 13, 9, 12, 6, 13},
+        {8, 8, 9, 0, 8, 8, 9, 0, 8, 8},
+        {6, 13, 9, 12, 6, 13, 9, 12, 6, 13},
+        {8, 8, 9, 0, 8, 8, 9, 0, 8, 8},
+    };*/
+    //exemplo nao hamiltoniano
+
+    vector<int> vertics = {0,1,2,3,4,5};
+    vector<vector<double> > adjMatrix = {
+        {-1,-1,-1,-1,1,1},
+        {-1,-1,-1,-1,1,1},
+        {-1,-1,-1,-1,1,1},
+        {-1,-1,-1,-1,1,1},
+        {1,1,1,1,-1,-1},
+        {1,1,1,1,-1,-1}
+        };
+
 
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost;
     vector<int> route = dynammicProgramming.Solve(cost);
+    if (route.size() != vertics.size()) {
+        cout << "Cara, Não é hamiltoniano";
+        return 0;
+    }
 
     cout << "Route:" << endl;
     for (const auto& elem: route)
