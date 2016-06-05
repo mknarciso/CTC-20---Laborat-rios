@@ -13,6 +13,7 @@ class DynammicProgramming
         DynammicProgramming(vector<int> verts, vector<vector<double> > matrix);
         virtual ~DynammicProgramming();
         vector<int> Solve (double &cost);
+        bool CheckHamiltonian(vector<int> &route);
 
 
     protected:
@@ -29,7 +30,6 @@ class DynammicProgramming
          double GetMinimumCostRoute (int startVertex, unordered_set<int> &hashSet, Node &root);
          vector<int> TraverseTree (Node &root, int startInt);
          void TraverseTreeUtil (Node &root, queue<int> &vertices);
-
 
 };
 

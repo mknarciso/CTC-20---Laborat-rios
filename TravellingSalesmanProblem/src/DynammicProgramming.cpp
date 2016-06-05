@@ -2,6 +2,8 @@
 #include <limits>
 #include <iostream>
 
+using namespace std;
+
 DynammicProgramming::DynammicProgramming(vector<int> verts, vector<vector<double> > matrix)
 {
     //ctor
@@ -104,6 +106,14 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
         }
     }
 }
+bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
+{
+    if (route.size() != vertices.size()) {
+        cout << "Grafo nao hamiltoniano." << endl;
+        return false;
+    }
+    return true;
+}
 
 int main()
 {
@@ -133,23 +143,21 @@ int main()
         {1,1,1,1,-1,-1}
         };
 
-
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost;
     vector<int> route = dynammicProgramming.Solve(cost);
-    if (route.size() != vertics.size()) {
-        cout << "Cara, Não é hamiltoniano";
-        return 0;
-    }
+    bool isHamiltonian;
+    isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
+    if (isHamiltonian) {
+        cout << "Route:" << endl;
+        for (const auto& elem: route)
+        {
+            cout << elem << " " ;
+        }
+        cout << endl;
 
-    cout << "Route:" << endl;
-    for (const auto& elem: route)
-    {
-        cout << elem << " " ;
+        cout << "Cost: " << cost << endl;
     }
-    cout << endl;
-
-    cout << "Cost: " << cost << endl;
 
     return 0;
 
