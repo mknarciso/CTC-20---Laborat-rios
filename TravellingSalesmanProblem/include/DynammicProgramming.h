@@ -17,6 +17,7 @@ class DynammicProgramming
         vector<int> BruteForce (double &cost);
         int vertices_size();
         vector<int> getBestRoute(double &cost, vector<int> &cities, int &root, int where);
+        vector<int> generateVert(int order);
 
     protected:
 

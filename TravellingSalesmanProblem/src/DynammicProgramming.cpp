@@ -1,7 +1,12 @@
 #include "DynammicProgramming.h"
 #include <limits>
 #include <iostream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <algorithm>
 #include <ctime>
+#include <vector>
 
 using namespace std;
 
@@ -32,25 +37,10 @@ vector<int> DynammicProgramming::Solve(double &cost)
 
 }
 vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities, int &root, int where_id){
-    //cin.get();
-    //cout << "getBestRoute => cost: " << cost << " => root: " << root << " => where_id: "<< where_id << endl << "Cities => ";
-    //for (unsigned i=0; i<cities.size(); ++i)
-    //    cout << ' ' << cities[i];
-    //cout << endl;
     vector<int> result, local;
     local = cities;
     local[where_id]=-1;
-    //cout << "Local => ";
-    //for (unsigned i=0; i<local.size(); ++i)
-    //    cout << ' ' << local[i];
-    //cout << endl;
     int from = where_id;
-    /*for (const auto& i: local){
-        if (local[i] != -1){
-            from = i;
-            break;
-        }
-    }*/
     if (root == -1)
         root = from;
     int any = 0;
@@ -62,115 +52,38 @@ vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities,
         if (local[i] != -1){
             any = any+1;
             temp_route = getBestRoute(temp_cost, local, root, i);
-            if (where_id==0){
-                cout << "local[i] => "<< local[i] << endl;
-                cout << temp_cost << " + " <<adjacencyMatrix[from][i] << " = " << (temp_cost + adjacencyMatrix[from][i]) << endl;
-                cout << "menor que ? min_cost => " << min_cost << endl;
-            }
             if ((min_cost==-1) || ((temp_cost + adjacencyMatrix[from][i]) < min_cost)){
 
                 min_cost = temp_cost + adjacencyMatrix[from][i];
                 min_route = temp_route;
                 id_min = i;
-                if (where_id==0)
-                    cout << "SIMM!!" << endl;
             }
-
             temp_cost = -1;
             temp_route.clear();
 
         }
-        //cout << any <<endl;
     }
     if (any==0){
         result.push_back(root);
         result.push_back(from);
         cost = adjacencyMatrix[from][root];
-        cout << "Last stop ("<<from<<":"<<root<<") => cost: " << cost << " => route : ";
-        for (unsigned i=0; i<result.size(); ++i)
-            cout << ' ' << result[i];
-        cout << endl;
         return result;
     }
 
-    cost = min_cost;// + adjacencyMatrix[from][id_min];
+    cost = min_cost;
     result = min_route;
     result.push_back(from);
-    cout << "Middle Stop Min=("<<from<<":"<<id_min<<") => cost: " <<
-    min_cost << " + " << adjacencyMatrix[from][id_min] << " = " << cost << " => route : ";
-    for (unsigned i=0; i<result.size(); ++i)
-        cout << ' ' << result[i];
-    cout << endl;
     return result;
 
 }
 
-/*vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities, int &root, int where_id){
-    vector<int> result, local;
-    local = cities;
-    //local = vertices;
-    local[where_id]=-1;
-    from = -1;
-    for (const auto& i: local){
-        if (local[i] != -1){
-            from = i;
-            break;
-        }
-    }
-    //int from = local.top();
-    //local.pop();
-    if (root == -1)
-        root = from;
-    int any = 0;
-    for (const auto& i: local){
-
-        if (local[i] != -1){
-            getBestRoute(double &cost, vector<int> &cities, int &root, int where_id)
-        }
-    }
-
-    if (local.empty()){
-        result.push_back(root);
-        cost = adjacencyMatrix[from][root];
-        return result;
-    } else{
-        int temp_cost = -1;
-        int min_cost = -1;
-        int id_min = -1;
-        vector<int> temp_route, min_route;
-        for (const auto& i: local){
-            temp_route = getBestRoute(temp_cost,local,root,i);
-            if (min_cost== -1 || temp_cost < min_cost){
-                min_cost = temp_cost;
-                min_route = temp_route;
-                id_min = i;
-            }
-            temp_cost = -1;
-            temp_route.clear();
-        }
-        cost = min_cost + adjacencyMatrix[];
-        return min_route;
-    }
-
-}
-*/
 vector<int> DynammicProgramming::BruteForce(double &cost)
 {
     clock_t begin = clock();
-    //vector<int> cities;
-    //for (const auto& vert: vertices){
-    //   cities.push_back(vertices[vert]);
-    //}
+
     int root = -1;
     vector<int> result = getBestRoute(cost,vertices, root, 0);
-
-
-    /*int startVertex = vertices.front();
-    unordered_set<int> hashSet(vertices.begin(), vertices.end());
-    hashSet.erase(startVertex);
-    Node root;
-    cost = GetMinimumCostRoute(startVertex, hashSet, root);*/
-
+    reverse(result.begin(),result.end());
 
     clock_t end = clock();
     cout << "Elapsed time in Brute Force : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
@@ -269,19 +182,74 @@ int DynammicProgramming::vertices_size()
     return vertices.size();
 }
 
+/*vector<int> generateVert(int order){
+    vector<int> result;
+    result.reserve(order);
+    for(int i=0; i<order;i++){
+        result[i] = i;
+    }
+}*/
+struct c_unique {
+  int current;
+  c_unique() {current=0;}
+  int operator()() {return current++;}
+} UniqueNumber;
+
 int main()
 {
+         // How to get a number.
+     int order = 0;
+        string input = "";
+     while (true) {
+       cout << "Digite a ordem do grafo para teste: ";
+       std::getline(cin, input);
+
+       // This code converts from string to number safely.
+       stringstream myStream(input);
+       if (myStream >> order)
+         break;
+       cout << "Numero invalido, tente novamente." << endl;
+     }
+     cout << "Gerando Grafo de ordem " << order << endl << endl;
+
     //exemplo hamiltoniano simple
-    vector<int> vertics  = {0,1,2,3};
+    /*vector<int> vertics  = {0,1,2,3};
     vector<vector<double> > adjMatrix = {
         {-1, 10, 15, 20},
         {5, -1 , 9, 10},
         {6, 13, -1, 12},
         {8, 8, 9, -1},
-    };
-    /*//exemplo hamiltoniano
-    vector<int> vertics  = {0,1,2,3, 4, 5, 6, 7, 8, 9};
-    vector<vector<double> > adjMatrix = {
+    };*/
+    //exemplo hamiltoniano
+    vector<int> vertics;
+    vertics.resize(order);
+    generate (vertics.begin(), vertics.end(), UniqueNumber);
+
+    vector<vector<double> > adjMatrix;
+    adjMatrix.resize(order);
+    for (int i = 0; i < order; ++i)
+        adjMatrix[i].resize(order);
+    for (int i = 0; i < order; ++i){
+        for (int j = 0; j < order; ++j)
+            if (i!=j)
+                adjMatrix[i][j] = double(rand() % 10 +1);
+            else
+                adjMatrix[i][j] = -1;
+    }
+    // Show the randoms
+    cout << "Vetor gerado : ";
+    for (int i = 0; i < order; ++i)
+        cout << " " << vertics[i];
+    cout << endl;
+    cout << "Matriz gerada : " << endl;
+    for (int i = 0; i < order; ++i){
+        for (int j = 0; j < order; ++j)
+            cout << " " << setw(3) << adjMatrix[i][j];
+        cout << endl;
+    }
+
+    //vertics =  {0,1,2,3, 4, 5, 6, 7, 8, 9};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
+    /*vector<vector<double> > adjMatrix = {
         {-1, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
         {5, -1 , 9, 10, 5, 0, 9, 10, 5, 9},
         {6, 13, -1, 12, 6, 13, 9, 12, 6, 13},
@@ -293,7 +261,6 @@ int main()
         {6, 13, 9, 12, 6, 13, 9, 12, -1, 13},
         {8, 8, 9, 0, 8, 8, 9, 0, 8, -1},
     };*/
-
     //exemplo nao hamiltoniano
 
    /* vector<int> vertics = {0,1,2,3,4,5};
@@ -317,14 +284,14 @@ int main()
         for (const auto& elem: route)
             {cout << elem << " " ;}
         cout << endl;
-        cout << "Cost: " << cost << endl;
+        cout << "Cost: " << cost << endl << endl << endl;
         // Call and print Brute Force
         vector<int> brute_route = dynammicProgramming.BruteForce(brute_cost);
         cout << "Route (Brute) - " << vertics.size() << " verts"  << endl;
         for (const auto& elem: brute_route)
             {cout << elem << " " ;}
         cout << endl;
-        cout << "Cost: " << brute_cost << endl;
+        cout << "Cost: " << brute_cost << endl << endl << endl;
     }
 
     return 0;
