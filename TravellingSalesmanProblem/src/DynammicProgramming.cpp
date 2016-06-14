@@ -225,6 +225,22 @@ int main()
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
 
+    //Para apenas 10 arestas - ! Entrar ordem 6 no console !
+
+    /*vector<vector<double> > adjMatrix;
+    adjMatrix.resize(order);
+    for (int i = 0; i < order; ++i)
+        adjMatrix[i].resize(order);
+    for (int i = 0; i < order; ++i){
+        for (int j = 0; j < order; ++j)
+            adjMatrix[i][j] = -1;
+    }
+    for (int i = 0; i < 10; ++i){
+        adjMatrix[rand() % 6][rand() % 6] = double(rand() % 10 +1);
+    }*/
+
+    // Para tabela de arestas completa
+
     vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
@@ -236,6 +252,7 @@ int main()
             else
                 adjMatrix[i][j] = -1;
     }
+
     // Show the randoms
     cout << "Vetor gerado : ";
     for (int i = 0; i < order; ++i)
