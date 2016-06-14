@@ -64,10 +64,10 @@ vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities,
             temp_route = getBestRoute(temp_cost, local, root, i);
             if (where_id==0){
                 cout << "local[i] => "<< local[i] << endl;
-                cout << temp_cost << " + " <<adjacencyMatrix[from][i] << " = " << (temp_cost + adjacencyMatrix[from][i]) << endl;
-                cout << "menor que ? min_cost => " << min_cost << endl;
+                cout << temp_cost << " + " <<adjacencyMatrix[from][i] << " = " << temp_cost+ adjacencyMatrix[from][i] << endl;
+                cout << "menor qmin_cost => " << min_cost << endl;
             }
-            if ((min_cost==-1) || ((temp_cost + adjacencyMatrix[from][i]) < min_cost)){
+            if ((min_cost=-1) || ((temp_cost + adjacencyMatrix[from][i])<min_cost)){
 
                 min_cost = temp_cost + adjacencyMatrix[from][i];
                 min_route = temp_route;
