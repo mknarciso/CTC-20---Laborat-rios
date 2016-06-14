@@ -108,7 +108,7 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
 }
 bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
 {
-    if (route.size() != vertices.size()) {
+    if (route.size() != vertices.size() + 1) {
         cout << "Grafo nao hamiltoniano." << endl;
         return false;
     }
@@ -118,7 +118,7 @@ bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
 int main()
 {
     //exemplo hamiltoniano
-    /*vector<int> vertics  = {0,1,2,3, 4, 5, 6, 7, 8, 9};
+    vector<int> vertics  = {0,1,2,3, 4, 5, 6, 7, 8, 9};
     vector<vector<double> > adjMatrix = {
         {0, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
         {5, 0 , 9, 10, 5, 0, 9, 10, 5, 9},
@@ -130,10 +130,10 @@ int main()
         {8, 8, 9, 0, 8, 8, 9, 0, 8, 8},
         {6, 13, 9, 12, 6, 13, 9, 12, 6, 13},
         {8, 8, 9, 0, 8, 8, 9, 0, 8, 8},
-    };*/
+    };
     //exemplo nao hamiltoniano
 
-    vector<int> vertics = {0,1,2,3,4,5};
+   /* vector<int> vertics = {0,1,2,3,4,5};
     vector<vector<double> > adjMatrix = {
         {-1,-1,-1,-1,1,1},
         {-1,-1,-1,-1,1,1},
@@ -141,12 +141,12 @@ int main()
         {-1,-1,-1,-1,1,1},
         {1,1,1,1,-1,-1},
         {1,1,1,1,-1,-1}
-        };
+        };*/
 
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost;
     vector<int> route = dynammicProgramming.Solve(cost);
-    bool isHamiltonian;
+    bool isHamiltonian = true;
     isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
     if (isHamiltonian) {
         cout << "Route:" << endl;
