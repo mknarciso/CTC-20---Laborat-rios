@@ -3,6 +3,7 @@
 #include <unordered_set>
 #ifndef DYNAMMICPROGRAMMING_H
 #define DYNAMMICPROGRAMMING_H
+#include <map>
 
 
 using namespace std;
@@ -14,10 +15,8 @@ class DynammicProgramming
         virtual ~DynammicProgramming();
         vector<int> Solve (double &cost);
         bool CheckHamiltonian(vector<int> &route);
-        vector<int> BruteForce (double &cost);
-        int vertices_size();
-        vector<int> getBestRoute(double &cost, vector<int> &cities, int &root, int where);
-        vector<int> generateVert(int order);
+        double TSP(int startVertex, int bitmask,  vector<vector<int> > &memo);
+        int SolveHeldKarp(double &cost);
 
     protected:
 
