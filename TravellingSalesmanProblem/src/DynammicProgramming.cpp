@@ -27,7 +27,7 @@ int DynammicProgramming::SolveHeldKarp(double &cost)
 {
     clock_t begin = clock();
     int startVertex = vertices.front();
-    int bitmask = 0;
+    int bitmask = 1;
     int K = 1 << vertices.size();
     vector<vector<int> > memo (vertices.size(), vector<int>(K));
     for (int i = 0; i < vertices.size(); i++)
@@ -60,9 +60,10 @@ vector<int> DynammicProgramming::Solve(double &cost)
 
 double DynammicProgramming::TSP (int startVertex,int bitmask, vector<vector<int> > &memo)
 {
+
     if (bitmask == (1 <<(vertices.size()))-1) {
         if (adjacencyMatrix[startVertex][0] == -1)
-            return 0;
+            return numeric_limits<double>::max();
         return adjacencyMatrix[startVertex][0];
     }
     if (memo[startVertex][bitmask] != -1) {
@@ -72,11 +73,11 @@ double DynammicProgramming::TSP (int startVertex,int bitmask, vector<vector<int>
     double result = numeric_limits<double>::max();
     for (int i = 0; i <= vertices.size() - 1; i++) {
         if (i != startVertex && (bitmask & (1 << i)) == 0 && adjacencyMatrix[startVertex][i] != -1) {
+
             result = std::min(result, adjacencyMatrix[startVertex][i] + TSP(i, bitmask | (1 << i), memo));
 
         }
     }
-    memo[startVertex][bitmask] = result;
     return result;
 }
 
@@ -163,7 +164,7 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
 }
 bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
 {
-    if (route.size() != vertices.size() + 1) {
+    if (route.size() != vertices.size()) {
         cout << "Grafo nao hamiltoniano." << endl;
         return false;
     }
@@ -235,15 +236,25 @@ int main()
             cout << " " << setw(3) << adjMatrix[i][j];
         cout << endl;
     }
+    vertics =  {0,1,2,3};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
+     adjMatrix = {
+          {-1, 9, -1, 5},
+          {9, -1, 15, 20},
+          {-1, 15 , -1, 10},
+          {5, 20 , 10, -1}
+     };
+
+
+
 
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost, brute_cost;
-    vector<int> route = dynammicProgramming.Solve(cost);
+    vector<int> route = dynammicProgramming.Solve(brute_cost);
     bool isHamiltonian = true;
     isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
     if (isHamiltonian) {
         cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
-        cout << "Cost Brute Force: " << cost << endl << endl << endl;
+        cout << "Cost Brute Force: " << brute_cost << endl << endl << endl;
         cout << "Route - " << vertics.size() << " verts"  << endl;
         for (const auto& elem: route)
             {cout << elem << " " ;}
