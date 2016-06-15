@@ -9,15 +9,23 @@
 	<queue>
 	<unordered_set>
 
-1465906137 source:c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\src\dynammicprogramming.cpp
+1465969463 source:c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\src\dynammicprogramming.cpp
 	"DynammicProgramming.h"
 	<limits>
 	<iostream>
+	<iomanip>
+	<string>
+	<sstream>
+	<algorithm>
+	<ctime>
+	<vector>
+	<map>
 
-1465101793 c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\include\dynammicprogramming.h
+1465969295 c:\users\lenovo\documents\ita\3º ano\5º semestre\ctc-20\travellingsalesmanproblem\include\dynammicprogramming.h
 	<vector>
 	<queue>
 	<unordered_set>
+	<map>
 
 1465950627 source:e:\google drive\ctc-20\luck\travellingsalesmanproblem\src\dynammicprogramming.cpp
 	"DynammicProgramming.h"

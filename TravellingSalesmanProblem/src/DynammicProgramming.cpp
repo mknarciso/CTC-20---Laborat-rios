@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ctime>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -22,6 +23,26 @@ DynammicProgramming::~DynammicProgramming()
     //dtor
 }
 
+int DynammicProgramming::SolveHeldKarp(double &cost)
+{
+    clock_t begin = clock();
+    int startVertex = vertices.front();
+    int bitmask = 0;
+    int K = 1 << vertices.size();
+    vector<vector<int> > memo (vertices.size(), vector<int>(K));
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        for (int j = 0; j < K ; j++)
+        {
+            memo[i][j] = -1;
+        }
+    }
+    cost = TSP (startVertex, bitmask, memo);
+    clock_t end = clock();
+    cout << "Elapsed time in DynammicPrograming : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    return cost;
+
+}
 vector<int> DynammicProgramming::Solve(double &cost)
 {
     clock_t begin = clock();
@@ -32,63 +53,31 @@ vector<int> DynammicProgramming::Solve(double &cost)
     Node root;
     cost = GetMinimumCostRoute(startVertex, hashSet, root);
     clock_t end = clock();
-    cout << "Elapsed time in DynammicPrograming : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    cout << "Elapsed time in Brute Force: " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
     return TraverseTree(root, startVertex);
 
 }
-vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities, int &root, int where_id){
-    vector<int> result, local;
-    local = cities;
-    local[where_id]=-1;
-    int from = where_id;
-    if (root == -1)
-        root = from;
-    int any = 0;
-    double temp_cost = -1;
-    double min_cost = -1;
-    int id_min = -1;
-    vector<int> temp_route, min_route;
-    for (int i=0;i<local.size();i++){
-        if (local[i] != -1){
-            any = any+1;
-            temp_route = getBestRoute(temp_cost, local, root, i);
-            if ((min_cost==-1) || ((temp_cost + adjacencyMatrix[from][i]) < min_cost)){
 
-                min_cost = temp_cost + adjacencyMatrix[from][i];
-                min_route = temp_route;
-                id_min = i;
-            }
-            temp_cost = -1;
-            temp_route.clear();
+double DynammicProgramming::TSP (int startVertex,int bitmask, vector<vector<int> > &memo)
+{
+    if (bitmask == (1 <<(vertices.size()))-1) {
+        if (adjacencyMatrix[startVertex][0] == -1)
+            return 0;
+        return adjacencyMatrix[startVertex][0];
+    }
+    if (memo[startVertex][bitmask] != -1) {
+        return memo[startVertex][bitmask];
+    }
+
+    double result = numeric_limits<double>::max();
+    for (int i = 0; i <= vertices.size() - 1; i++) {
+        if (i != startVertex && (bitmask & (1 << i)) == 0 && adjacencyMatrix[startVertex][i] != -1) {
+            result = std::min(result, adjacencyMatrix[startVertex][i] + TSP(i, bitmask | (1 << i), memo));
 
         }
     }
-    if (any==0){
-        result.push_back(root);
-        result.push_back(from);
-        cost = adjacencyMatrix[from][root];
-        return result;
-    }
-
-    cost = min_cost;
-    result = min_route;
-    result.push_back(from);
+    memo[startVertex][bitmask] = result;
     return result;
-
-}
-
-vector<int> DynammicProgramming::BruteForce(double &cost)
-{
-    clock_t begin = clock();
-
-    int root = -1;
-    vector<int> result = getBestRoute(cost,vertices, root, 0);
-    reverse(result.begin(),result.end());
-
-    clock_t end = clock();
-    cout << "Elapsed time in Brute Force : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
-    return result;
-
 }
 
 double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<int> &hashSet, Node &root)
@@ -120,6 +109,7 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
             unordered_set<int> newHashSet = hashSet;
 
             newHashSet.erase(destination);
+
             double costOfVisitingOtherNodes = GetMinimumCostRoute(destination, newHashSet, root.ChildNodes[i]);
             double currentCost = costOfVisitingCurrentNode + costOfVisitingOtherNodes;
 
@@ -128,9 +118,12 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
                 totalCost = currentCost;
                 selectIdx = i;
             }
+            else root.ChildNodes[i].ChildNodes.clear();
             i++;
+
         }
     }
+    hashSet.clear();
     //problema here
     if (root.ChildNodes.size() !=0)
         root.ChildNodes[selectIdx].Selected = true;
@@ -177,24 +170,11 @@ bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
     return true;
 }
 
-int DynammicProgramming::vertices_size()
-{
-    return vertices.size();
-}
-
-/*vector<int> generateVert(int order){
-    vector<int> result;
-    result.reserve(order);
-    for(int i=0; i<order;i++){
-        result[i] = i;
-    }
-}*/
 struct c_unique {
   int current;
   c_unique() {current=0;}
   int operator()() {return current++;}
 } UniqueNumber;
-
 int main()
 {
          // How to get a number.
@@ -212,15 +192,6 @@ int main()
      }
      cout << "Gerando Grafo de ordem " << order << endl << endl;
 
-    //exemplo hamiltoniano simple
-    /*vector<int> vertics  = {0,1,2,3};
-    vector<vector<double> > adjMatrix = {
-        {-1, 10, 15, 20},
-        {5, -1 , 9, 10},
-        {6, 13, -1, 12},
-        {8, 8, 9, -1},
-    };*/
-    //exemplo hamiltoniano
     vector<int> vertics;
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
@@ -265,50 +236,19 @@ int main()
         cout << endl;
     }
 
-    //vertics =  {0,1,2,3, 4, 5, 6, 7, 8, 9};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
-    /*vector<vector<double> > adjMatrix = {
-        {-1, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
-        {5, -1 , 9, 10, 5, 0, 9, 10, 5, 9},
-        {6, 13, -1, 12, 6, 13, 9, 12, 6, 13},
-        {8, 8, 9, -1, 8, 8, 9, 0, 8, 8},
-        {0, 10, 15, 20, -1, 10, 15, 20, 0 , 10},
-        {5, 0 , 9, 10, 5, -1, 9, 10, 5, 9},
-        {6, 13, 9, 12, 6, 13, -1, 12, 6, 13},
-        {8, 8, 9, 0, 8, 8, 9, -1, 8, 8},
-        {6, 13, 9, 12, 6, 13, 9, 12, -1, 13},
-        {8, 8, 9, 0, 8, 8, 9, 0, 8, -1},
-    };*/
-    //exemplo nao hamiltoniano
-
-   /* vector<int> vertics = {0,1,2,3,4,5};
-    vector<vector<double> > adjMatrix = {
-        {-1,-1,-1,-1,1,1},
-        {-1,-1,-1,-1,1,1},
-        {-1,-1,-1,-1,1,1},
-        {-1,-1,-1,-1,1,1},
-        {1,1,1,1,-1,-1},
-        {1,1,1,1,-1,-1}
-        };*/
-
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost, brute_cost;
     vector<int> route = dynammicProgramming.Solve(cost);
     bool isHamiltonian = true;
     isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
     if (isHamiltonian) {
-        // Print Dynammic Result
-        cout << "Route (Dynammic) - " << vertics.size() << " verts"  << endl;
+        cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
+        cout << "Cost Brute Force: " << cost << endl << endl << endl;
+        cout << "Route - " << vertics.size() << " verts"  << endl;
         for (const auto& elem: route)
             {cout << elem << " " ;}
         cout << endl;
-        cout << "Cost: " << cost << endl << endl << endl;
-        // Call and print Brute Force
-        vector<int> brute_route = dynammicProgramming.BruteForce(brute_cost);
-        cout << "Route (Brute) - " << vertics.size() << " verts"  << endl;
-        for (const auto& elem: brute_route)
-            {cout << elem << " " ;}
-        cout << endl;
-        cout << "Cost: " << brute_cost << endl << endl << endl;
+
     }
 
     return 0;
