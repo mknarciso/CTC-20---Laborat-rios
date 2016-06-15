@@ -32,11 +32,13 @@ vector<int> DynammicProgramming::Solve(double &cost)
     Node root;
     cost = GetMinimumCostRoute(startVertex, hashSet, root);
     clock_t end = clock();
-    cout << "Elapsed time in DynammicPrograming : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    cout << "Elapsed time in DynammicPrograming : " << (end-begin) << " ms" << endl;
+    //cout << "Elapsed time in DynammicPrograming : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
     return TraverseTree(root, startVertex);
 
 }
 vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities, int &root, int where_id){
+    //cin.get();
     vector<int> result, local;
     local = cities;
     local[where_id]=-1;
@@ -49,10 +51,10 @@ vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities,
     int id_min = -1;
     vector<int> temp_route, min_route;
     for (int i=0;i<local.size();i++){
-        if (local[i] != -1){
+        if (local[i] > 0){
             any = any+1;
             temp_route = getBestRoute(temp_cost, local, root, i);
-            if ((min_cost==-1) || ((temp_cost + adjacencyMatrix[from][i]) < min_cost)){
+            if ((temp_cost>0)&&(adjacencyMatrix[from][i]>0)&&((min_cost<0) || ((temp_cost + adjacencyMatrix[from][i]) < min_cost))){
 
                 min_cost = temp_cost + adjacencyMatrix[from][i];
                 min_route = temp_route;
@@ -67,12 +69,30 @@ vector<int> DynammicProgramming::getBestRoute(double &cost, vector<int> &cities,
         result.push_back(root);
         result.push_back(from);
         cost = adjacencyMatrix[from][root];
+
+
+        cout << "Last stop ("<<from<<":"<<root<<") => cost: " << cost << " => route : ";
+        for (unsigned i=0; i<result.size(); ++i)
+            cout << ' ' << result[i];
+        cout << endl;
         return result;
     }
 
     cost = min_cost;
     result = min_route;
     result.push_back(from);
+    //if (adjacencyMatrix[from][id_min]<0){
+    //    cost=-1;
+    //    result.clear();
+    //}
+
+
+    cout << "Middle Stop Min=("<<from<<":"<<id_min<<") => cost: " <<
+    min_cost << " + " << adjacencyMatrix[from][id_min] << " = " << cost << " => route : ";
+    for (unsigned i=0; i<result.size(); ++i)
+        cout << ' ' << result[i];
+    cout << endl;
+
     return result;
 
 }
@@ -86,7 +106,8 @@ vector<int> DynammicProgramming::BruteForce(double &cost)
     reverse(result.begin(),result.end());
 
     clock_t end = clock();
-    cout << "Elapsed time in Brute Force : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    cout << "Elapsed time in Brute Force : " << (end-begin) << " ms" << endl;
+    //cout << "Elapsed time in Brute Force : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
     return result;
 
 }
@@ -213,21 +234,21 @@ int main()
      cout << "Gerando Grafo de ordem " << order << endl << endl;
 
     //exemplo hamiltoniano simple
-    /*vector<int> vertics  = {0,1,2,3};
+    vector<int> vertics  = {0,1,2,3};
     vector<vector<double> > adjMatrix = {
-        {-1, 10, 15, 20},
+        {-1,-1, 15, 20},
         {5, -1 , 9, 10},
-        {6, 13, -1, 12},
+        {-1, 13, -1, 12},
         {8, 8, 9, -1},
-    };*/
+    };
     //exemplo hamiltoniano
-    vector<int> vertics;
+    /*vector<int> vertics;
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
 
     //Para apenas 10 arestas - ! Entrar ordem 6 no console !
 
-    /*vector<vector<double> > adjMatrix;
+    vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
         adjMatrix[i].resize(order);
@@ -235,13 +256,22 @@ int main()
         for (int j = 0; j < order; ++j)
             adjMatrix[i][j] = -1;
     }
-    for (int i = 0; i < 10; ++i){
-        adjMatrix[rand() % 6][rand() % 6] = double(rand() % 10 +1);
+    for (int k = 0; k < 10; ++k){
+        int m = rand() % 6;
+        int n = rand() % 6;
+        int value;
+        if (m>n){
+            value = rand() % 10 +1;
+            adjMatrix[m][n] = double(value);
+            adjMatrix[n][m] = double(value);
+        }
+        else
+            k=k-1;
     }*/
 
     // Para tabela de arestas completa
 
-    vector<vector<double> > adjMatrix;
+    /*vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
         adjMatrix[i].resize(order);
@@ -251,7 +281,7 @@ int main()
                 adjMatrix[i][j] = double(rand() % 10 +1);
             else
                 adjMatrix[i][j] = -1;
-    }
+    }*/
 
     // Show the randoms
     cout << "Vetor gerado : ";
