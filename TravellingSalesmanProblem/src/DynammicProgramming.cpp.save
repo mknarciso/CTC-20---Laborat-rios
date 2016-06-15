@@ -164,9 +164,9 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
         }
     }
 }
-bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
+bool DynammicProgramming::CheckHamiltonian(vector<int> &route, double &brute_cost)
 {
-    if (route.size() != vertices.size() + 1) {
+    if (route.size() != vertices.size() + 1 || brute_cost > 999999 ) {
         cout << "Grafo nao hamiltoniano." << endl;
         return false;
     }
@@ -191,7 +191,7 @@ int main()
          break;
        cout << "Numero invalido, tente novamente." << endl;
      }
-     cout << "Gerando Grafo de ordem: " << rep << endl << endl;
+     cout << "Repeticoes: " << rep << endl << endl;
      // Pega a ordem do grafo
      int order = 0;
      string input = "";
@@ -208,14 +208,14 @@ int main()
      int arest = 0;
      string input2 = "";
      while (true) {
-       cout << "Digite a qtde de arestas: ";
+       cout << "Digite a qtde de arestas (zero para grafo completo): ";
        std::getline(cin, input2);
        stringstream myStream(input2);
        if (myStream >> arest)
          break;
        cout << "Numero invalido, tente novamente." << endl;
      }
-     cout << "Gerando Grafo de ordem: " << arest << endl << endl;
+     cout << "Gerando Grafo com: " << arest << " arestas" << endl << endl;
 
 
     vector<int> vertics;
@@ -224,10 +224,9 @@ int main()
     for (int i=0;i<rep;i++){
         cout << "====== " << i+1 << " ======" << endl;
         /// GERADORES DE MATRIZ
-
+        vector<vector<double> > adjMatrix;
         //Para apenas 10 arestas - ! Entrar ordem 6 no console !
         if (arest!=0){
-            vector<vector<double> > adjMatrix;
             adjMatrix.resize(order);
             for (int i = 0; i < order; ++i)
                 adjMatrix[i].resize(order);
@@ -250,7 +249,6 @@ int main()
         }
         // Para tabela de arestas completa
         else {
-            vector<vector<double> > adjMatrix;
             adjMatrix.resize(order);
             for (int i = 0; i < order; ++i)
                 adjMatrix[i].resize(order);
@@ -266,7 +264,7 @@ int main()
 
         // Show the randoms
 
-        /*
+
         cout << "Vetor gerado : ";
         for (int i = 0; i < order; ++i)
             cout << " " << vertics[i];
@@ -278,7 +276,7 @@ int main()
             cout << endl;
         }
 
-        */
+
 
 
         DynammicProgramming dynammicProgramming(vertics, adjMatrix);

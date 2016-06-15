@@ -164,9 +164,9 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
         }
     }
 }
-bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
+bool DynammicProgramming::CheckHamiltonian(vector<int> &route, double &brute_cost)
 {
-    if (route.size() != vertices.size() + 1) {
+    if (route.size() != vertices.size() + 1 || brute_cost > 999999 ) {
         cout << "Grafo nao hamiltoniano." << endl;
         return false;
     }
@@ -283,16 +283,16 @@ int main()
         double cost, brute_cost;
         vector<int> route = dynammicProgramming.Solve(brute_cost);
         bool isHamiltonian = true;
-        isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
+        isHamiltonian = dynammicProgramming.CheckHamiltonian(route, brute_cost);
         if (isHamiltonian) {
             cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
             cout << "Cost Brute Force: " << brute_cost << endl;
-            /*
+
             cout << "Route - " << vertics.size() << " verts => ";
             for (const auto& elem: route)
                 {cout << elem << " " ;}
             cout << endl;
-            */
+
         }
     }
     return 0;
