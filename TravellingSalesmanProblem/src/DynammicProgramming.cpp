@@ -39,7 +39,7 @@ int DynammicProgramming::SolveHeldKarp(double &cost)
     }
     cost = TSP (startVertex, bitmask, memo);
     clock_t end = clock();
-    cout << "Elapsed time in DynammicPrograming : " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    cout << "Elapsed time in DynammicPrograming : " << (end-begin) << " ms" << endl;
     return cost;
 
 }
@@ -53,7 +53,7 @@ vector<int> DynammicProgramming::Solve(double &cost)
     Node root;
     cost = GetMinimumCostRoute(startVertex, hashSet, root);
     clock_t end = clock();
-    cout << "Elapsed time in Brute Force: " << (end-begin)/1000 << "." << (end-begin)%1000 << " s" << endl;
+    cout << "Elapsed time in Brute Force: " << (end-begin) << " ms" << endl;
     return TraverseTree(root, startVertex);
 
 }
@@ -180,91 +180,121 @@ struct c_unique {
 } UniqueNumber;
 int main()
 {
-         // How to get a number.
+     // Define as repetições
+     int rep = 0;
+     string input3 = "";
+     while (true) {
+       cout << "Digite quantidade de repetições: ";
+       std::getline(cin, input3);
+       stringstream myStream(input3);
+       if (myStream >> rep)
+         break;
+       cout << "Numero invalido, tente novamente." << endl;
+     }
+     cout << "Repeticoes: " << rep << endl << endl;
+     // Pega a ordem do grafo
      int order = 0;
-        string input = "";
+     string input = "";
      while (true) {
        cout << "Digite a ordem do grafo para teste: ";
        std::getline(cin, input);
-
-       // This code converts from string to number safely.
        stringstream myStream(input);
        if (myStream >> order)
          break;
        cout << "Numero invalido, tente novamente." << endl;
      }
-     cout << "Gerando Grafo de ordem " << order << endl << endl;
+     cout << "Gerando Grafo de ordem: " << order << endl << endl;
+     // Pega as arestas do grafo
+     int arest = 0;
+     string input2 = "";
+     while (true) {
+       cout << "Digite a qtde de arestas (zero para grafo completo): ";
+       std::getline(cin, input2);
+       stringstream myStream(input2);
+       if (myStream >> arest)
+         break;
+       cout << "Numero invalido, tente novamente." << endl;
+     }
+     cout << "Gerando Grafo com: " << arest << " arestas" << endl << endl;
+
 
     vector<int> vertics;
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
-
-    //Para apenas 10 arestas - ! Entrar ordem 6 no console !
-    vector<vector<double> > adjMatrix;
-    adjMatrix.resize(order);
-    for (int i = 0; i < order; ++i)
-        adjMatrix[i].resize(order);
-    for (int i = 0; i < order; ++i){
-        for (int j = 0; j < order; ++j)
-            adjMatrix[i][j] = -1;
-    }
-    for (int k = 0; k < 10; ++k){
-        int m = rand() % 6;
-        int n = rand() % 6;
-        int value;
-        if (m>n){
-            value = rand() % 10 +1;
-            adjMatrix[m][n] = double(value);
-            adjMatrix[n][m] = double(value);
+    for (int i=0;i<rep;i++){
+        cout << "====== " << i+1 << " ======" << endl;
+        /// GERADORES DE MATRIZ
+        vector<vector<double> > adjMatrix;
+        //Para apenas 10 arestas - ! Entrar ordem 6 no console !
+        if (arest!=0){
+            adjMatrix.resize(order);
+            for (int i = 0; i < order; ++i)
+                adjMatrix[i].resize(order);
+            for (int i = 0; i < order; ++i){
+                for (int j = 0; j < order; ++j)
+                    adjMatrix[i][j] = -1;
+            }
+            for (int k = 0; k < arest; ++k){
+                int m = rand() % order;
+                int n = rand() % order;
+                int value;
+                if (m>n && adjMatrix[m][n]<0){
+                    value = rand() % 10 +1;
+                    adjMatrix[m][n] = double(value);
+                    adjMatrix[n][m] = double(value);
+                }
+                else
+                    k=k-1;
+            };
         }
-        else
-            k=k-1;
-    };
+        // Para tabela de arestas completa
+        else {
+            adjMatrix.resize(order);
+            for (int i = 0; i < order; ++i)
+                adjMatrix[i].resize(order);
+            for (int i = 0; i < order; ++i){
+                for (int j = 0; j < order; ++j)
+                    if (i!=j)
+                        adjMatrix[i][j] = double(rand() % 10 +1);
+                    else
+                        adjMatrix[i][j] = -1;
+            }
+        }
+        /// FIM DO GERADOR DE MATRIZ
 
-    // Para tabela de arestas completa
-    /*
-    vector<vector<double> > adjMatrix;
-    adjMatrix.resize(order);
-    for (int i = 0; i < order; ++i)
-        adjMatrix[i].resize(order);
-    for (int i = 0; i < order; ++i){
-        for (int j = 0; j < order; ++j)
-            if (i!=j)
-                adjMatrix[i][j] = double(rand() % 10 +1);
-            else
-                adjMatrix[i][j] = -1;
-    }*/
+        // Show the randoms
 
-    // Show the randoms
-    cout << "Vetor gerado : ";
-    for (int i = 0; i < order; ++i)
-        cout << " " << vertics[i];
-    cout << endl;
-    cout << "Matriz gerada : " << endl;
-    for (int i = 0; i < order; ++i){
-        for (int j = 0; j < order; ++j)
-            cout << " " << setw(3) << adjMatrix[i][j];
+
+        cout << "Vetor gerado : ";
+        for (int i = 0; i < order; ++i)
+            cout << " " << vertics[i];
         cout << endl;
+        cout << "Matriz gerada : " << endl;
+        for (int i = 0; i < order; ++i){
+            for (int j = 0; j < order; ++j)
+                cout << " " << setw(3) << adjMatrix[i][j];
+            cout << endl;
+        }
+
+
+
+
+        DynammicProgramming dynammicProgramming(vertics, adjMatrix);
+        double cost, brute_cost;
+        vector<int> route = dynammicProgramming.Solve(brute_cost);
+        bool isHamiltonian = true;
+        isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
+        if (isHamiltonian) {
+            cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
+            cout << "Cost Brute Force: " << brute_cost << endl;
+            /*
+            cout << "Route - " << vertics.size() << " verts => ";
+            for (const auto& elem: route)
+                {cout << elem << " " ;}
+            cout << endl;
+            */
+        }
     }
-
-
-
-
-    DynammicProgramming dynammicProgramming(vertics, adjMatrix);
-    double cost, brute_cost;
-    vector<int> route = dynammicProgramming.Solve(brute_cost);
-    bool isHamiltonian = true;
-    isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
-    if (isHamiltonian) {
-        cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
-        cout << "Cost Brute Force: " << brute_cost << endl << endl << endl;
-        cout << "Route - " << vertics.size() << " verts"  << endl;
-        for (const auto& elem: route)
-            {cout << elem << " " ;}
-        cout << endl;
-
-    }
-
     return 0;
 
 }
