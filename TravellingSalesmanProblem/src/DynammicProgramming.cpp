@@ -88,6 +88,8 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
         node.Value = vertices.front();
         node.Selected = true;
         root.ChildNodes.push_back(node);
+        if (adjacencyMatrix[startVertex][0] == -1)
+            return 999999;
         return adjacencyMatrix[startVertex][0];
     }
 
@@ -164,7 +166,7 @@ void DynammicProgramming::TraverseTreeUtil(Node &root, queue<int> &vertics)
 }
 bool DynammicProgramming::CheckHamiltonian(vector<int> &route)
 {
-    if (route.size() != vertices.size()) {
+    if (route.size() != vertices.size() + 1) {
         cout << "Grafo nao hamiltoniano." << endl;
         return false;
     }
@@ -198,8 +200,7 @@ int main()
     generate (vertics.begin(), vertics.end(), UniqueNumber);
 
     //Para apenas 10 arestas - ! Entrar ordem 6 no console !
-
-    /*vector<vector<double> > adjMatrix;
+    vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
         adjMatrix[i].resize(order);
@@ -207,12 +208,21 @@ int main()
         for (int j = 0; j < order; ++j)
             adjMatrix[i][j] = -1;
     }
-    for (int i = 0; i < 10; ++i){
-        adjMatrix[rand() % 6][rand() % 6] = double(rand() % 10 +1);
-    }*/
+    for (int k = 0; k < 10; ++k){
+        int m = rand() % 6;
+        int n = rand() % 6;
+        int value;
+        if (m>n){
+            value = rand() % 10 +1;
+            adjMatrix[m][n] = double(value);
+            adjMatrix[n][m] = double(value);
+        }
+        else
+            k=k-1;
+    };
 
     // Para tabela de arestas completa
-
+    /*
     vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
@@ -223,7 +233,7 @@ int main()
                 adjMatrix[i][j] = double(rand() % 10 +1);
             else
                 adjMatrix[i][j] = -1;
-    }
+    }*/
 
     // Show the randoms
     cout << "Vetor gerado : ";
@@ -236,13 +246,6 @@ int main()
             cout << " " << setw(3) << adjMatrix[i][j];
         cout << endl;
     }
-    vertics =  {0,1,2,3};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
-     adjMatrix = {
-          {-1, 9, -1, 5},
-          {9, -1, 15, 20},
-          {-1, 15 , -1, 10},
-          {5, 20 , 10, -1}
-     };
 
 
 
