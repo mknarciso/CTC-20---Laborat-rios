@@ -1,6 +1,7 @@
 #include "DynammicProgramming.h"
 #include <limits>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 #include <algorithm>
@@ -224,6 +225,22 @@ int main()
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
 
+    //Para apenas 10 arestas - ! Entrar ordem 6 no console !
+
+    /*vector<vector<double> > adjMatrix;
+    adjMatrix.resize(order);
+    for (int i = 0; i < order; ++i)
+        adjMatrix[i].resize(order);
+    for (int i = 0; i < order; ++i){
+        for (int j = 0; j < order; ++j)
+            adjMatrix[i][j] = -1;
+    }
+    for (int i = 0; i < 10; ++i){
+        adjMatrix[rand() % 6][rand() % 6] = double(rand() % 10 +1);
+    }*/
+
+    // Para tabela de arestas completa
+
     vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
@@ -235,10 +252,19 @@ int main()
             else
                 adjMatrix[i][j] = -1;
     }
+
     // Show the randoms
-    cout << "Vetor gerado: ";
+    cout << "Vetor gerado : ";
     for (int i = 0; i < order; ++i)
-        vertics[i].resize(order);
+        cout << " " << vertics[i];
+    cout << endl;
+    cout << "Matriz gerada : " << endl;
+    for (int i = 0; i < order; ++i){
+        for (int j = 0; j < order; ++j)
+            cout << " " << setw(3) << adjMatrix[i][j];
+        cout << endl;
+    }
+
     //vertics =  {0,1,2,3, 4, 5, 6, 7, 8, 9};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
     /*vector<vector<double> > adjMatrix = {
         {-1, 10, 15, 20, 0, 10, 15, 20, 0 , 10},
