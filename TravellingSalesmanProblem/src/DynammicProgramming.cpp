@@ -62,10 +62,11 @@ double DynammicProgramming::TSP (int startVertex,int bitmask, vector<vector<int>
 {
     if (bitmask == (1 <<(vertices.size()))-1) {
         if (adjacencyMatrix[startVertex][0] == -1)
-            return 0;
+            return 99999999999;
         return adjacencyMatrix[startVertex][0];
     }
     if (memo[startVertex][bitmask] != -1) {
+        cout << "[" << startVertex << " -> " << bitmask << "] = " << memo[startVertex][bitmask] << endl;
         return memo[startVertex][bitmask];
     }
 
@@ -87,6 +88,9 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
         node.Value = vertices.front();
         node.Selected = true;
         root.ChildNodes.push_back(node);
+        cout << "[" << startVertex << " -> 0] = " << adjacencyMatrix[startVertex][0] << endl;
+        if (adjacencyMatrix[startVertex][0]<0)
+            return 99999999999;
         return adjacencyMatrix[startVertex][0];
     }
 
@@ -111,9 +115,10 @@ double DynammicProgramming::GetMinimumCostRoute(int startVertex, unordered_set<i
             newHashSet.erase(destination);
 
             double costOfVisitingOtherNodes = GetMinimumCostRoute(destination, newHashSet, root.ChildNodes[i]);
+            cout << "[" << startVertex << " -> " << destination << "] = " << costOfVisitingCurrentNode<<" + "<<costOfVisitingOtherNodes;
             double currentCost = costOfVisitingCurrentNode + costOfVisitingOtherNodes;
-
-            if (totalCost > currentCost)
+            cout <<" = "<< currentCost << endl;
+            if ((totalCost > currentCost) && (costOfVisitingCurrentNode>0) && (costOfVisitingOtherNodes>0))
             {
                 totalCost = currentCost;
                 selectIdx = i;
@@ -192,13 +197,12 @@ int main()
      }
      cout << "Gerando Grafo de ordem " << order << endl << endl;
 
-    vector<int> vertics;
+   /* vector<int> vertics;
     vertics.resize(order);
     generate (vertics.begin(), vertics.end(), UniqueNumber);
 
     //Para apenas 10 arestas - ! Entrar ordem 6 no console !
-
-    /*vector<vector<double> > adjMatrix;
+    vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
         adjMatrix[i].resize(order);
@@ -206,13 +210,29 @@ int main()
         for (int j = 0; j < order; ++j)
             adjMatrix[i][j] = -1;
     }
-    for (int i = 0; i < 10; ++i){
-        adjMatrix[rand() % 6][rand() % 6] = double(rand() % 10 +1);
-    }*/
+    for (int k = 0; k < 10; ++k){
+        int m = rand() % 6;
+        int n = rand() % 6;
+        int value;
+        if (m>n){
+            value = rand() % 10 +1;
+            adjMatrix[m][n] = double(value);
+            adjMatrix[n][m] = double(value);
+        }
+        else
+            k=k-1;
+    }};*/
+    vector<int> vertics =  {0,1,2,3};//generateVert(order); //= {0,1,2,3, 4, 5, 6, 7, 8, 9};
+    vector<vector<double> > adjMatrix = {
+          {-1, 9,2, 5},
+          {9, -1, 15, 20},
+          {2, 15 , -1, 10},
+          {5, 20 , 10, -1}
+          };
 
     // Para tabela de arestas completa
 
-    vector<vector<double> > adjMatrix;
+    /*vector<vector<double> > adjMatrix;
     adjMatrix.resize(order);
     for (int i = 0; i < order; ++i)
         adjMatrix[i].resize(order);
@@ -222,7 +242,7 @@ int main()
                 adjMatrix[i][j] = double(rand() % 10 +1);
             else
                 adjMatrix[i][j] = -1;
-    }
+    }*/
 
     // Show the randoms
     cout << "Vetor gerado : ";
@@ -238,12 +258,12 @@ int main()
 
     DynammicProgramming dynammicProgramming(vertics, adjMatrix);
     double cost, brute_cost;
-    vector<int> route = dynammicProgramming.Solve(cost);
+    vector<int> route = dynammicProgramming.Solve(brute_cost);
     bool isHamiltonian = true;
     isHamiltonian = dynammicProgramming.CheckHamiltonian(route);
     if (isHamiltonian) {
         cout << "Cost Held Karp: " << dynammicProgramming.SolveHeldKarp(cost) << endl;
-        cout << "Cost Brute Force: " << cost << endl << endl << endl;
+        cout << "Cost Brute Force: " << brute_cost << endl << endl << endl;
         cout << "Route - " << vertics.size() << " verts"  << endl;
         for (const auto& elem: route)
             {cout << elem << " " ;}
